@@ -31,7 +31,8 @@ def main():
     parser.add_argument('-a', '--access-token', type=argparse.FileType('r'))
     parser.add_argument('-c', '--consumer-key', type=argparse.FileType('r'))
     parser.add_argument('-s', '--sleep', type=float, default=0.1)
-    parser.add_argument('-n', '--limit', type=int, default=-1)
+    parser.add_argument('-n', '--limit', type=int, default=-1,
+                        help='Number of tweets to be deleted. limit=-1 means unlimited')
     args = parser.parse_args()
 
     consumer_key = {}
@@ -47,28 +48,23 @@ def main():
     api = API(auth)
 
     done = set()
-    while True:
-        if tweets := api.user_timeline():
-            for i in tweets:
-                tweet_id = i.id
-                if tweet_id in done:
-                    continue
-                print(i.created_at, ':', i.text)
-                try:
-                    api.destroy_status(tweet_id)
-                    done.add(tweet_id)
-                except NotFound:
-                    done.add(tweet_id)
-                except Exception as e:
-                    print(e)
-                if 0 < args.limit <= len(done):
-                    break
-                time.sleep(args.sleep)
-        else:
-            break
-
-        if 0 < args.limit <= len(done):
-            break
+    if tweets := api.user_timeline():
+        for i in tweets:
+            if 0 <= args.limit <= len(done):
+                break
+            tweet_id = i.id
+            if tweet_id in done:
+                continue
+            print(i.created_at, ':', i.text)
+            try:
+                api.destroy_status(tweet_id)
+                done.add(tweet_id)
+            except NotFound:
+                done.add(tweet_id)
+            except Exception as e:
+                print(e)
+            time.sleep(args.sleep)
+    print(f'deleted: {len(done)}')
 
 
 if __name__ == '__main__':
