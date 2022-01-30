@@ -12,12 +12,21 @@ Object {
   "Resources": Object {
     "LambdaD247545B": Object {
       "DependsOn": Array [
+        "LambdaServiceRoleDefaultPolicyDAE46E21",
         "LambdaServiceRoleA8ED4D3B",
       ],
       "Properties": Object {
         "Code": Object {
           "S3Bucket": "cdk-hnb659fds-assets-dummy-dummy-dummy-1",
-          "S3Key": "aceb811a4d25da05236032cb9dcf142269b43d41dbb6d96abf5fd3dd1d431fe5.zip",
+          "S3Key": "78ecf877db8d34031077b959750b2cfea2ec78124465de66f542d0a241f6d6c8.zip",
+        },
+        "Environment": Object {
+          "Variables": Object {
+            "SSM_KEY_ACCESS_TOKEN": "/app/lambda/delete-my-tweets/user_name/access-token",
+            "SSM_KEY_ACCESS_TOKEN_SECRET": "/app/lambda/delete-my-tweets/user_name/access-token-secret",
+            "SSM_KEY_CONSUMER_KEY": "/app/lambda/delete-my-tweets/user_name/consumer-key",
+            "SSM_KEY_CONSUMER_SECRET": "/app/lambda/delete-my-tweets/user_name/consumer-secret",
+          },
         },
         "FunctionName": "delete-my-tweets-lambda",
         "Handler": "main.handler",
@@ -85,6 +94,106 @@ Object {
         ],
       },
       "Type": "AWS::IAM::Role",
+    },
+    "LambdaServiceRoleDefaultPolicyDAE46E21": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "ssm:DescribeParameters",
+                "ssm:GetParameters",
+                "ssm:GetParameter",
+                "ssm:GetParameterHistory",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":ssm:dummy-dummy-1:dummy:parameter/app/lambda/delete-my-tweets/user_name/consumer-key",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "ssm:DescribeParameters",
+                "ssm:GetParameters",
+                "ssm:GetParameter",
+                "ssm:GetParameterHistory",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":ssm:dummy-dummy-1:dummy:parameter/app/lambda/delete-my-tweets/user_name/consumer-secret",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "ssm:DescribeParameters",
+                "ssm:GetParameters",
+                "ssm:GetParameter",
+                "ssm:GetParameterHistory",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":ssm:dummy-dummy-1:dummy:parameter/app/lambda/delete-my-tweets/user_name/access-token",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "ssm:DescribeParameters",
+                "ssm:GetParameters",
+                "ssm:GetParameter",
+                "ssm:GetParameterHistory",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":ssm:dummy-dummy-1:dummy:parameter/app/lambda/delete-my-tweets/user_name/access-token-secret",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "LambdaServiceRoleDefaultPolicyDAE46E21",
+        "Roles": Array [
+          Object {
+            "Ref": "LambdaServiceRoleA8ED4D3B",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
     },
     "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A": Object {
       "DependsOn": Array [
