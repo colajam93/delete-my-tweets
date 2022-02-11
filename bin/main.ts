@@ -1,5 +1,6 @@
 import * as cdk from 'aws-cdk-lib';
 import 'source-map-support/register';
+import { ChatbotStack } from '../lib/chatbot-stack';
 import { LambdaStack } from '../lib/lambda-stack';
 import { loadSetting } from '../lib/settings';
 
@@ -15,6 +16,15 @@ if (!env) {
   throw Error("Missing '-c env={env}'");
 }
 
-const config = loadSetting(`settings/${env}.yaml`);
+const setting = loadSetting(`settings/${env}.yaml`);
 
-new LambdaStack(app, 'delete-my-tweets-lambda', { ...config, env: accountEnv });
+const lambdaStack = new LambdaStack(app, 'delete-my-tweets-lambda', { ...setting, env: accountEnv });
+
+const chatbotStack = new ChatbotStack(app, 'delete-my-tweets-chatbot', {
+  slackChannelConfigurationName: setting.slack.channelConfigurationName,
+  slackChannelId: setting.slack.channelId,
+  slackWorkspaceId: setting.slack.workspaceId,
+  functions: [lambdaStack.function],
+  env: accountEnv,
+});
+chatbotStack.addDependency(lambdaStack);

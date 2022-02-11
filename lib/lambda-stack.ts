@@ -10,6 +10,8 @@ export interface LambdaStackProps extends cdk.StackProps {
 }
 
 export class LambdaStack extends cdk.Stack {
+  readonly function: lambda.IFunction;
+
   constructor(scope: Construct, id: string, props: LambdaStackProps) {
     super(scope, id, props);
 
@@ -22,7 +24,7 @@ export class LambdaStack extends cdk.Stack {
       entry: 'lambda/',
       index: 'main.py',
       runtime: lambda.Runtime.PYTHON_3_9,
-      functionName: 'delete-my-tweets-lambda',
+      functionName: `delete-my-tweets-lambda-${props.userName}`,
       logRetention: logs.RetentionDays.ONE_MONTH,
       timeout: cdk.Duration.minutes(15),
       environment: {
@@ -32,6 +34,7 @@ export class LambdaStack extends cdk.Stack {
         SSM_KEY_ACCESS_TOKEN_SECRET: ssmKeyAccessTokenSecret,
       },
     });
+    this.function = func;
 
     for (const key of [ssmKeyConsumerKey, ssmKeyConsumerSecret, ssmKeyAccessToken, ssmKeyAccessTokenSecret]) {
       const k = key.split('/').pop();
