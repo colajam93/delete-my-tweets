@@ -4,3 +4,5 @@
 cdk.out
 Pipfile*
 .vscode
+.venv
+settings
