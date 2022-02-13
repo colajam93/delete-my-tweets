@@ -90,7 +90,7 @@ def main(args=parse_args(), use_ssm: bool = False):
     api = API(auth)
 
     done = set()
-    if tweets := api.user_timeline():
+    if tweets := api.user_timeline(count=args.limit):
         for i in tweets:
             if 0 <= args.limit <= len(done):
                 break
