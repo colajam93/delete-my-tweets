@@ -1,12 +1,21 @@
 import * as lambda_python from '@aws-cdk/aws-lambda-python-alpha';
 import * as cdk from 'aws-cdk-lib';
+import * as events from 'aws-cdk-lib/aws-events';
+import * as events_targets from 'aws-cdk-lib/aws-events-targets';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as logs from 'aws-cdk-lib/aws-logs';
 import * as ssm from 'aws-cdk-lib/aws-ssm';
 import { Construct } from 'constructs';
 
+export interface CronSetting {
+  readonly hour: string;
+  readonly minute: string;
+  readonly limit: number;
+}
+
 export interface LambdaStackProps extends cdk.StackProps {
   readonly userName: string;
+  readonly cron?: CronSetting;
 }
 
 export class LambdaStack extends cdk.Stack {
@@ -44,6 +53,17 @@ export class LambdaStack extends cdk.Stack {
         });
         param.grantRead(func);
       }
+    }
+
+    if (props.cron) {
+      new events.Rule(this, 'Rule', {
+        schedule: events.Schedule.cron({ hour: props.cron.hour, minute: props.cron.minute }),
+        targets: [
+          new events_targets.LambdaFunction(func, {
+            event: events.RuleTargetInput.fromObject({ limit: props.cron.limit }),
+          }),
+        ],
+      });
     }
   }
 }

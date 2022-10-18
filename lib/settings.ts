@@ -7,9 +7,16 @@ export interface SlackSetting {
   readonly workspaceId: string;
 }
 
+export interface CronSetting {
+  readonly hour: string;
+  readonly minute: string;
+  readonly limit: number;
+}
+
 export interface Setting {
   readonly userName: string;
   readonly slack: SlackSetting;
+  readonly cron?: CronSetting;
 }
 
 export function loadSetting(path: string): Setting {
