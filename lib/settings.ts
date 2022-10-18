@@ -2,14 +2,14 @@ import * as fs from 'fs';
 import * as yaml from 'js-yaml';
 
 export interface SlackSetting {
-  channelConfigurationName: string;
-  channelId: string;
-  workspaceId: string;
+  readonly channelConfigurationName: string;
+  readonly channelId: string;
+  readonly workspaceId: string;
 }
 
 export interface Setting {
-  userName: string;
-  slack: SlackSetting;
+  readonly userName: string;
+  readonly slack: SlackSetting;
 }
 
 export function loadSetting(path: string): Setting {

@@ -6,7 +6,7 @@ import * as ssm from 'aws-cdk-lib/aws-ssm';
 import { Construct } from 'constructs';
 
 export interface LambdaStackProps extends cdk.StackProps {
-  userName: string;
+  readonly userName: string;
 }
 
 export class LambdaStack extends cdk.Stack {
